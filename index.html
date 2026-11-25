@@ -337,6 +337,25 @@ body {
 </style>
 <noscript><style>#status { display: none; }</style></noscript>
 <!-- /Fortress Watch loading cover head -->
+<script>
+(function () {
+	// Счётчик посещений веб-версии: Яндекс Метрика, счётчик 114676618.
+	// Площадку узнаём по данным запуска: Telegram кладёт их в хеш адреса (#tgWebAppData=),
+	// MAX тоже в хеш (#WebAppData=), VK передаёт параметры vk_ в адресе. ?src=имя задаёт площадку вручную.
+	// В Метрику уходит адрес страницы без хеша и параметров: в них данные профиля игрока.
+	var counterId = 114676618, gameId = 'dozor-kreposti';
+	var launchHash = location.hash || '', launchQuery = location.search || '', platform = 'web';
+	if (launchHash.indexOf('tgWebAppData=') >= 0 || launchHash.indexOf('tgWebAppPlatform=') >= 0) { platform = 'telegram'; }
+	else if (launchHash.indexOf('WebAppData=') >= 0) { platform = 'max'; }
+	else if (launchQuery.indexOf('vk_app_id=') >= 0 || launchQuery.indexOf('vk_platform=') >= 0) { platform = 'vk'; }
+	else if (window.WebViewHandler || (document.referrer || '').indexOf('max.ru') >= 0) { platform = 'max'; }
+	var forced = launchQuery.match(/[?&]src=([a-z0-9_-]{1,20})/i);
+	if (forced) { platform = forced[1].toLowerCase(); }
+	window.__platform = platform;
+	(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js?id=' + counterId, 'ym');
+	window.ym(counterId, 'init', {ssr: true, clickmap: false, trackLinks: false, accurateTrackBounce: true, webvisor: false, url: location.origin + location.pathname, referrer: document.referrer, params: {platform: platform, game: gameId}});
+})();
+</script>
 </head>
 	<body>
 		<canvas id="canvas">
