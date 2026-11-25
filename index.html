@@ -93,7 +93,276 @@ body {
 		<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
 <link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
 
-	</head>
+	<!-- Fortress Watch loading cover head -->
+<link rel="preload" href="max-loading-78627bf68e/dozor.jpg" as="image" fetchpriority="high">
+<link rel="preload" href="max-loading-78627bf68e/golos-loader.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="max-loading-78627bf68e/cormorant-title.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face {
+  font-family: "FW Cormorant";
+  src: url("max-loading-78627bf68e/cormorant-title.woff2") format("woff2");
+  font-weight: 300 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "FW Golos";
+  src: url("max-loading-78627bf68e/golos-loader.woff2") format("woff2");
+  font-weight: 400 900;
+  font-display: swap;
+}
+#status { visibility: visible; }
+#status > #status-splash { display: none !important; }
+#status > #status-progress {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  clip-path: inset(50%);
+  pointer-events: none;
+}
+#status > #status-notice { position: relative; z-index: 2; }
+#fw-loading-cover {
+  --ink: #f9ead1;
+  --accent: #ffe0aa;
+  --loading-fill: linear-gradient(90deg, #987148, #eed19b 80%, #fff0c5);
+  --loading-track: rgba(225, 233, 250, .18);
+  --loading-shadow: rgba(255, 183, 87, .34);
+  position: absolute;
+  inset: 0;
+  isolation: isolate;
+  overflow: hidden;
+  container-type: inline-size;
+  background: #172434;
+  color: var(--ink);
+  text-align: start;
+  font: 500 14px "FW Golos", system-ui, sans-serif;
+}
+#fw-loading-cover[hidden] { display: none; }
+#fw-loading-cover.fw-horde {
+  --ink: #ffe9d7;
+  --accent: #ffcc9d;
+  --loading-fill: linear-gradient(90deg, #a22d24 5%, #e46538 70%, #ffd69e);
+  --loading-track: rgba(255, 220, 195, .20);
+  --loading-shadow: rgba(237, 101, 52, .46);
+  background: #2a1210;
+}
+#fw-loading-cover .fw-scene,
+#fw-loading-cover .fw-shade,
+#fw-loading-cover .fw-sparks { position: absolute; inset: 0; }
+#fw-loading-cover .fw-scene {
+  transform-origin: 55% 61%;
+  animation: fw-camera 9s ease-in-out infinite alternate;
+}
+#fw-loading-cover .fw-scene img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+#fw-loading-cover .fw-shade {
+  background: linear-gradient(180deg, rgba(7, 17, 30, .24), transparent 30%, transparent 65%,
+    rgba(5, 13, 23, .58) 86%, #07101a 100%);
+}
+#fw-loading-cover .fw-mist {
+  position: absolute;
+  top: 64%;
+  left: -35%;
+  width: 154%;
+  height: 25%;
+  background: radial-gradient(ellipse at 32% 45%, rgba(153, 207, 233, .17), transparent 51%),
+    radial-gradient(ellipse at 68% 64%, rgba(169, 209, 229, .16), transparent 49%);
+  mix-blend-mode: screen;
+  animation: fw-mist 8s ease-in-out infinite alternate;
+}
+#fw-loading-cover .fw-beacon {
+  position: absolute;
+  top: var(--y);
+  left: var(--x);
+  width: 23%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 190, 88, .76), rgba(255, 130, 44, .22) 46%, transparent 71%);
+  mix-blend-mode: screen;
+  animation: fw-beacon 4.8s ease-in-out var(--delay) infinite;
+}
+#fw-loading-cover .fw-sparks { pointer-events: none; }
+#fw-loading-cover .fw-spark {
+  position: absolute;
+  top: var(--y);
+  left: var(--x);
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background: #ffe0a1;
+  box-shadow: 0 0 5px 1px rgba(255, 138, 39, .43);
+  opacity: 0;
+  animation: fw-spark var(--period) linear var(--delay) infinite;
+}
+#fw-loading-cover .fw-name {
+  position: absolute;
+  top: 11.6%;
+  inset-inline: 7%;
+  text-align: center;
+}
+#fw-loading-cover .fw-name h1 {
+  margin: 0;
+  color: #fff1d0;
+  font-family: "FW Cormorant", Georgia, serif;
+  font-size: 60px;
+  font-size: clamp(39px, 18.3cqw, 90px);
+  font-weight: 690;
+  letter-spacing: -.045em;
+  line-height: .76;
+  text-shadow: 0 3px 22px rgba(4, 11, 23, .66);
+}
+#fw-loading-cover .fw-name span { display: block; }
+#fw-loading-cover .fw-subtitle { font-size: .85em; margin-top: .18em; }
+#fw-loading-cover .fw-hud {
+  position: absolute;
+  inset-inline: 9%;
+  bottom: max(7%, calc(env(safe-area-inset-bottom, 0px) + 15px));
+  max-width: 480px;
+  margin-inline: auto;
+}
+#fw-loading-cover .fw-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+#fw-loading-cover .fw-caption { font-weight: 560; font-size: 12px; }
+#fw-loading-cover .fw-percent {
+  color: var(--accent);
+  font-weight: 690;
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+}
+#fw-loading-cover .fw-meter {
+  position: relative;
+  height: 5px;
+  margin-top: 9px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--loading-track);
+}
+#fw-loading-cover .fw-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  transform-origin: left;
+  transform: scaleX(var(--fw-progress, 0));
+  transition: transform .18s ease-out;
+  background: var(--loading-fill);
+  box-shadow: 0 0 11px var(--loading-shadow);
+}
+#fw-loading-cover .fw-meter:not([aria-valuenow]) .fw-fill {
+  width: 31%;
+  animation: fw-waiting 1.9s ease-in-out infinite;
+}
+#fw-loading-cover .fw-tip {
+  margin: 13px 0 0;
+  color: #d1dbea;
+  font-size: 11px;
+  line-height: 1.45;
+}
+#fw-loading-cover.fw-horde .fw-scene {
+  transform-origin: 52% 65%;
+  animation: fw-siege-camera 7s ease-in-out infinite alternate;
+}
+#fw-loading-cover.fw-horde img { object-position: 51% center; }
+#fw-loading-cover.fw-horde .fw-shade {
+  background: linear-gradient(180deg, rgba(24, 10, 10, .26), transparent 34%, transparent 67%,
+    rgba(25, 9, 7, .64) 86%, #190a09 100%);
+}
+#fw-loading-cover.fw-horde .fw-name { top: 10%; }
+#fw-loading-cover.fw-horde h1 {
+  color: #ffe5cd;
+  font-family: "FW Golos", system-ui, sans-serif;
+  font-size: 48px;
+  font-size: clamp(29px, 13.2cqw, 68px);
+  font-weight: 795;
+  letter-spacing: -.025em;
+  line-height: .93;
+  text-transform: uppercase;
+  text-shadow: 0 3px 18px rgba(26, 7, 7, .88);
+}
+#fw-loading-cover.fw-horde .fw-subtitle {
+  margin-top: 1.25em;
+  color: #ffc59a;
+  font-size: .27em;
+  letter-spacing: .30em;
+  font-weight: 700;
+}
+#fw-loading-cover.fw-horde .fw-mist {
+  top: 57%;
+  left: -25%;
+  width: 135%;
+  height: 31%;
+  background: radial-gradient(ellipse, rgba(237, 126, 70, .22), transparent 65%);
+  animation: fw-dust 5.4s ease-in-out infinite alternate;
+}
+#fw-loading-cover.fw-horde .fw-siege-light {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 61% 49%, rgba(255, 147, 70, .27), transparent 67%);
+  mix-blend-mode: screen;
+  animation: fw-siege-light 5.8s ease-in-out infinite;
+}
+#fw-loading-cover.fw-horde .fw-spark { background: #ffd18c; }
+#fw-loading-cover.fw-horde .fw-tip { color: #e9d4c6; }
+
+@keyframes fw-camera {
+  from { transform: scale(1.025) translateY(.1%); }
+  to { transform: scale(1.074) translate(-.35%, -.5%); }
+}
+@keyframes fw-siege-camera {
+  from { transform: scale(1.016) translateX(.28%); }
+  to { transform: scale(1.094) translate(-.55%, -.38%); }
+}
+@keyframes fw-beacon {
+  0%, 100% { transform: translate(-50%, -50%) scale(.76); opacity: .10; }
+  20% { transform: translate(-50%, -50%) scale(1.17); opacity: .58; }
+  36% { transform: translate(-50%, -50%) scale(.92); opacity: .32; }
+  50%, 82% { transform: translate(-50%, -50%) scale(.82); opacity: .14; }
+}
+@keyframes fw-mist {
+  from { transform: translateX(-5%); opacity: .58; }
+  to { transform: translateX(19%); opacity: .88; }
+}
+@keyframes fw-dust {
+  from { transform: translate(-11%, 9%); opacity: .28; }
+  to { transform: translate(19%, -12%); opacity: .8; }
+}
+@keyframes fw-siege-light {
+  0%, 100% { opacity: .20; transform: translateX(-4%); }
+  33% { opacity: .55; transform: translateX(1%); }
+  69% { opacity: .27; transform: translateX(4%); }
+}
+@keyframes fw-spark {
+  0%, 100% { opacity: 0; }
+  14% { opacity: .72; }
+  58% { opacity: .45; }
+  91% { opacity: 0; }
+  from { transform: translate(0, 0); }
+  to { transform: translate(var(--dx), var(--dy)); }
+}
+@keyframes fw-waiting {
+  from { transform: translateX(-105%); }
+  to { transform: translateX(325%); }
+}
+@media (orientation: landscape) {
+  #fw-loading-cover .fw-name h1 { font-size: clamp(34px, 13vh, 75px); }
+  #fw-loading-cover.fw-horde .fw-name h1 { font-size: clamp(28px, 10vh, 63px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #fw-loading-cover * { animation: none !important; transition: none !important; }
+  #fw-loading-cover .fw-meter:not([aria-valuenow]) .fw-fill { transform: translateX(105%); }
+}
+
+
+</style>
+<noscript><style>#status { display: none; }</style></noscript>
+<!-- /Fortress Watch loading cover head -->
+</head>
 	<body>
 		<canvas id="canvas">
 			Your browser does not support the canvas tag.
@@ -103,7 +372,28 @@ body {
 			Your browser does not support JavaScript.
 		</noscript>
 
-		<div id="status">
+		<div id="status"><!-- Fortress Watch loading cover body -->
+<div id="fw-loading-cover" class="fw-dozor" lang="ru">
+  <div class="fw-scene" aria-hidden="true">
+    <img src="max-loading-78627bf68e/dozor.jpg" alt="" fetchpriority="high" decoding="async">
+    <div class="fw-mist"></div>
+<div class="fw-beacon" style="--x:16.1%;--y:43.8%;--delay:-1s"></div>
+<div class="fw-beacon" style="--x:72.8%;--y:48.2%;--delay:-2.1s"></div>
+<div class="fw-beacon" style="--x:28.2%;--y:63.3%;--delay:-3.1s"></div>
+    <div class="fw-sparks"></div>
+  </div>
+  <div class="fw-shade" aria-hidden="true"></div>
+  <div class="fw-name"><h1>Дозор <span class="fw-subtitle">крепости</span></h1></div>
+  <div class="fw-hud">
+    <div class="fw-label"><span class="fw-caption">Загрузка игры</span><span class="fw-percent"></span></div>
+    <div class="fw-meter" role="progressbar" aria-label="Загрузка игры" aria-valuemin="0" aria-valuemax="100">
+      <div class="fw-fill"></div>
+    </div>
+    <p class="fw-tip">Баллиста сильна против щитников.</p>
+  </div>
+</div>
+<!-- /Fortress Watch loading cover body -->
+
 			<img id="status-splash" class="show-image--false fullsize--true use-filter--true" src="index.png" alt="">
 			<progress id="status-progress"></progress>
 			<div id="status-notice"></div>
@@ -215,6 +505,64 @@ const engine = new Engine(GODOT_CONFIG);
 	}
 }());
 		</script>
-	</body>
+	<!-- Fortress Watch loading cover script -->
+<script>
+(() => {
+  const cover = document.getElementById("fw-loading-cover");
+  const source = document.getElementById("status-progress");
+  const notice = document.getElementById("status-notice");
+  if (!cover || !source || !notice) return;
+
+  const meter = cover.querySelector(".fw-meter");
+  const caption = cover.querySelector(".fw-caption");
+  const percent = cover.querySelector(".fw-percent");
+  source.setAttribute("aria-hidden", "true");
+
+  const update = () => {
+    cover.hidden = notice.style.display === "block";
+    const maximum = Number(source.getAttribute("max"));
+    if (!source.hasAttribute("value") || maximum <= 0) {
+      meter.removeAttribute("aria-valuenow");
+      caption.textContent = "Загрузка игры";
+      percent.textContent = "";
+      return;
+    }
+    const downloaded = Math.max(0, Math.min(100, Math.floor(100 * source.value / maximum)));
+    meter.setAttribute("aria-valuenow", downloaded);
+    meter.style.setProperty("--fw-progress", downloaded / 100);
+    caption.textContent = downloaded === 100 ? "Запуск игры" : "Загрузка игры";
+    percent.textContent = downloaded + "%";
+  };
+  const observer = new MutationObserver(update);
+  observer.observe(source, {attributeFilter: ["max", "value"]});
+  observer.observe(notice, {attributeFilter: ["style"]});
+  update();
+
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const horde = cover.classList.contains("fw-horde");
+  const origins = [[28.2, 63.3], [16.1, 43.8], [72.8, 48.2]];
+  const sparks = document.createDocumentFragment();
+  for (let index = 0; index < 16; index++) {
+    const spark = document.createElement("i");
+    const [x, y] = origins[index % origins.length];
+    const period = 2.2 + Math.random() * 3.1;
+    spark.className = "fw-spark";
+    for (const [property, value] of Object.entries({
+      x: (horde ? 8 + Math.random() * 84 : x + Math.random() * 4 - 2) + "%",
+      y: (horde ? 46 + Math.random() * 48 : y + Math.random() * 2) + "%",
+      size: (1 + Math.random() * (horde ? 2 : 1.5)) + "px",
+      dx: (horde ? 38 + Math.random() * 52 : -12 + Math.random() * 28) + "px",
+      dy: (-34 - Math.random() * 75) + "px",
+      delay: -(Math.random() * period) + "s",
+      period: period + "s",
+    })) spark.style.setProperty("--" + property, value);
+    sparks.append(spark);
+  }
+  cover.querySelector(".fw-sparks").append(sparks);
+})();
+
+</script>
+<!-- /Fortress Watch loading cover script -->
+</body>
 </html>
 
