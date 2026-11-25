@@ -94,19 +94,13 @@ body {
 <link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
 
 	<!-- Fortress Watch loading cover head -->
-<link rel="preload" href="max-loading-78627bf68e/dozor.jpg" as="image" fetchpriority="high">
-<link rel="preload" href="max-loading-78627bf68e/golos-loader.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="max-loading-78627bf68e/cormorant-title.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="max-loading-f9d2f096b4/dozor.jpg" as="image" fetchpriority="high">
+<link rel="preload" href="max-loading-f9d2f096b4/dozor-wordmark.webp" as="image" fetchpriority="high">
+<link rel="preload" href="max-loading-f9d2f096b4/golos-loader.woff2" as="font" type="font/woff2" crossorigin>
 <style>
 @font-face {
-  font-family: "FW Cormorant";
-  src: url("max-loading-78627bf68e/cormorant-title.woff2") format("woff2");
-  font-weight: 300 700;
-  font-display: swap;
-}
-@font-face {
   font-family: "FW Golos";
-  src: url("max-loading-78627bf68e/golos-loader.woff2") format("woff2");
+  src: url("max-loading-f9d2f096b4/golos-loader.woff2") format("woff2");
   font-weight: 400 900;
   font-display: swap;
 }
@@ -199,23 +193,21 @@ body {
 }
 #fw-loading-cover .fw-name {
   position: absolute;
-  top: 11.6%;
-  inset-inline: 7%;
+  top: 11%;
+  inset-inline: 0;
+  width: min(84%, 420px);
+  margin: 0 auto;
+  color: var(--ink);
   text-align: center;
+  font-size: clamp(24px, 7cqw, 42px);
+  line-height: 1;
 }
-#fw-loading-cover .fw-name h1 {
-  margin: 0;
-  color: #fff1d0;
-  font-family: "FW Cormorant", Georgia, serif;
-  font-size: 60px;
-  font-size: clamp(39px, 18.3cqw, 90px);
-  font-weight: 690;
-  letter-spacing: -.045em;
-  line-height: .76;
-  text-shadow: 0 3px 22px rgba(4, 11, 23, .66);
+#fw-loading-cover .fw-name img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 5px 8px rgba(4, 11, 23, .52));
 }
-#fw-loading-cover .fw-name span { display: block; }
-#fw-loading-cover .fw-subtitle { font-size: .85em; margin-top: .18em; }
 #fw-loading-cover .fw-hud {
   position: absolute;
   inset-inline: 9%;
@@ -272,25 +264,6 @@ body {
 #fw-loading-cover.fw-horde .fw-shade {
   background: linear-gradient(180deg, rgba(24, 10, 10, .26), transparent 34%, transparent 67%,
     rgba(25, 9, 7, .64) 86%, #190a09 100%);
-}
-#fw-loading-cover.fw-horde .fw-name { top: 10%; }
-#fw-loading-cover.fw-horde h1 {
-  color: #ffe5cd;
-  font-family: "FW Golos", system-ui, sans-serif;
-  font-size: 48px;
-  font-size: clamp(29px, 13.2cqw, 68px);
-  font-weight: 795;
-  letter-spacing: -.025em;
-  line-height: .93;
-  text-transform: uppercase;
-  text-shadow: 0 3px 18px rgba(26, 7, 7, .88);
-}
-#fw-loading-cover.fw-horde .fw-subtitle {
-  margin-top: 1.25em;
-  color: #ffc59a;
-  font-size: .27em;
-  letter-spacing: .30em;
-  font-weight: 700;
 }
 #fw-loading-cover.fw-horde .fw-mist {
   top: 57%;
@@ -350,8 +323,10 @@ body {
   to { transform: translateX(325%); }
 }
 @media (orientation: landscape) {
-  #fw-loading-cover .fw-name h1 { font-size: clamp(34px, 13vh, 75px); }
-  #fw-loading-cover.fw-horde .fw-name h1 { font-size: clamp(28px, 10vh, 63px); }
+  #fw-loading-cover .fw-name {
+    top: 8%;
+    width: min(84%, 420px, 63vh);
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   #fw-loading-cover * { animation: none !important; transition: none !important; }
@@ -375,7 +350,7 @@ body {
 		<div id="status"><!-- Fortress Watch loading cover body -->
 <div id="fw-loading-cover" class="fw-dozor" lang="ru">
   <div class="fw-scene" aria-hidden="true">
-    <img src="max-loading-78627bf68e/dozor.jpg" alt="" fetchpriority="high" decoding="async">
+    <img src="max-loading-f9d2f096b4/dozor.jpg" alt="" fetchpriority="high" decoding="async">
     <div class="fw-mist"></div>
 <div class="fw-beacon" style="--x:16.1%;--y:43.8%;--delay:-1s"></div>
 <div class="fw-beacon" style="--x:72.8%;--y:48.2%;--delay:-2.1s"></div>
@@ -383,7 +358,8 @@ body {
     <div class="fw-sparks"></div>
   </div>
   <div class="fw-shade" aria-hidden="true"></div>
-  <div class="fw-name"><h1>Дозор <span class="fw-subtitle">крепости</span></h1></div>
+  <h1 class="fw-name"><img src="max-loading-f9d2f096b4/dozor-wordmark.webp" width="1008" height="360"
+    alt="Дозор крепости" fetchpriority="high" decoding="async"></h1>
   <div class="fw-hud">
     <div class="fw-label"><span class="fw-caption">Загрузка игры</span><span class="fw-percent"></span></div>
     <div class="fw-meter" role="progressbar" aria-label="Загрузка игры" aria-valuemin="0" aria-valuemax="100">
