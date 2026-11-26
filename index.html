@@ -94,6 +94,76 @@ body {
 <link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
 <script>
 (function () {
+	// Запуск внутри Telegram и VK. Telegram кладёт данные запуска в хеш адреса (#tgWebAppData=…),
+	// VK передаёт параметры vk_… в адресе. Мост площадки грузим только там: Telegram — готовность,
+	// во всю высоту, без закрытия свайпом вниз; VK — сигнал запуска VKWebAppInit, без него VK
+	// игру не покажет. Если скрипт площадки не загрузился, те же сигналы шлём напрямую.
+	var launchHash = location.hash || '', launchQuery = location.search || '';
+	var tgSession = function () { try { return (sessionStorage.getItem('__telegram__initParams') || '').indexOf('tgWebAppData') >= 0; } catch (e) { return false; } };
+	var inTg = launchHash.indexOf('tgWebAppData=') >= 0 || launchHash.indexOf('tgWebAppPlatform=') >= 0 || !!window.TelegramWebviewProxy || tgSession();
+	var inVk = !inTg && (launchQuery.indexOf('vk_app_id=') >= 0 || launchQuery.indexOf('vk_platform=') >= 0);
+	if (!inTg && !inVk) { return; }
+	var safe = function (f) { try { var p = f(); if (p && p.catch) { p.catch(function () {}); } } catch (e) {} };
+	var load = function (src, done, fail) {
+		var s = document.createElement('script');
+		s.src = src; s.async = true; s.onload = done; s.onerror = fail;
+		(document.head || document.documentElement).appendChild(s);
+	};
+	var tgPost = function (type) {
+		try {
+			if (window.TelegramWebviewProxy) { window.TelegramWebviewProxy.postEvent(type, JSON.stringify('')); }
+			else if (window.parent && window.parent !== window) { window.parent.postMessage(JSON.stringify({ eventType: type, eventData: '' }), '*'); }
+		} catch (e) {}
+	};
+	var tgSignalled = false;
+	var tgSignal = function () {
+		if (tgSignalled) { return; }
+		tgSignalled = true;
+		tgPost('web_app_ready');
+		tgPost('web_app_expand');
+	};
+	var startTg = function () {
+		var tg = window.Telegram && window.Telegram.WebApp;
+		if (!tg || !tg.isVersionAtLeast) { tgSignal(); return; }
+		tgSignalled = true;
+		safe(function () { return tg.ready(); });
+		safe(function () { return tg.expand(); });
+		if (tg.isVersionAtLeast('6.9')) {
+			safe(function () { return tg.setHeaderColor('#0f1715'); });
+			safe(function () { return tg.setBackgroundColor('#0f1715'); });
+		}
+		if (tg.isVersionAtLeast('7.7')) { safe(function () { return tg.disableVerticalSwipes(); }); }
+	};
+	var vkInitSent = false;
+	var vkInitRaw = function () {
+		if (vkInitSent) { return; }
+		vkInitSent = true;
+		try {
+			if (window.AndroidBridge && window.AndroidBridge.VKWebAppInit) { window.AndroidBridge.VKWebAppInit('{}'); }
+			else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.VKWebAppInit) { window.webkit.messageHandlers.VKWebAppInit.postMessage({}); }
+			else if (window.parent && window.parent !== window) { window.parent.postMessage({ handler: 'VKWebAppInit', params: {}, type: 'vk-connect' }, '*'); }
+		} catch (e) {}
+	};
+	var startVk = function () {
+		var b = window.vkBridge;
+		if (!b || !b.send) { vkInitRaw(); return; }
+		if (!vkInitSent) { vkInitSent = true; safe(function () { return b.send('VKWebAppInit'); }); }
+	};
+	var VK_BRIDGE = '@vkontakte/vk-bridge@3.0.2/dist/browser.min.js';
+	// скрипт площадки может зависнуть, а не упасть с ошибкой: сигнал не ждёт его дольше 2,5 с
+	if (inTg) {
+		load('https://telegram.org/js/telegram-web-app.js', startTg, startTg);
+		setTimeout(tgSignal, 2500);
+	} else {
+		load('https://cdn.jsdelivr.net/npm/' + VK_BRIDGE, startVk, function () {
+			load('https://unpkg.com/' + VK_BRIDGE, startVk, startVk);
+		});
+		setTimeout(vkInitRaw, 2500);
+	}
+})();
+</script>
+<script>
+(function () {
 	// Счётчик посещений веб-версии: Яндекс Метрика, счётчик 114676618.
 	// Площадку узнаём по данным запуска: Telegram кладёт их в хеш адреса (#tgWebAppData=),
 	// MAX тоже в хеш (#WebAppData=), VK передаёт параметры vk_ в адресе. ?src=имя задаёт площадку вручную.
