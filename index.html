@@ -179,6 +179,32 @@ body {
 	window.__platform = platform;
 	(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js?id=' + counterId, 'ym');
 	window.ym(counterId, 'init', {ssr: true, clickmap: false, trackLinks: false, accurateTrackBounce: true, webvisor: false, url: location.origin + location.pathname, referrer: document.referrer, params: {platform: platform, game: gameId}});
+	// Посетители и игроки. Посетитель — сам визит (выше). Дальше параметр визита act → площадка →
+	// стадия: loaded — игра загрузилась и видна (Godot убрал экран загрузки #status); active —
+	// игрок начал играть: 3 касания или щелчка по игре после загрузки. Пассивные = посетители
+	// без active. Отправляется только площадка и стадия, никаких данных игрока.
+	var sent = {}, seen = false, loadedAt = 0, taps = 0;
+	var mark = function (stage) {
+		if (sent[stage]) { return; }
+		sent[stage] = 1;
+		var p = {};
+		p[platform] = stage;
+		window.ym(counterId, 'params', {act: p});
+	};
+	var poll = setInterval(function () {
+		var s = document.getElementById('status');
+		seen = seen || !!s;
+		if (seen && (!s || getComputedStyle(s).display === 'none')) { clearInterval(poll); loadedAt = Date.now(); mark('loaded'); }
+	}, 400);
+	// экран загрузки есть в странице к DOMContentLoaded, а убирается движком позже — так повторный
+	// заход из кеша, где игра стартует быстрее первой проверки, тоже засчитывается
+	document.addEventListener('DOMContentLoaded', function () { seen = seen || !!document.getElementById('status'); });
+	var tap = function () {
+		if (!loadedAt) { return; }
+		taps++;
+		if (taps >= 3) { mark('active'); window.removeEventListener('pointerdown', tap, true); }
+	};
+	window.addEventListener('pointerdown', tap, true);
 })();
 </script>
 	<!-- Fortress Watch loading cover head -->
